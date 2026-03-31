@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio 2026 • Nico Ranellucci</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        eggshell: '#F9F9F4',
+                        charcoal: '#282828',
+                        darkred: '#7F1D1D',
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        @layer base {
+            body {
+                background-color: #F9F9F4; /* eggshell */
+                color: #282828; /* charcoal */
+                font-family: 'Outfit', sans-serif;
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+            
+            h1, h2, h3, h4, h5, h6 {
+                color: #7F1D1D; /* darkred */
+            }
+
+            ::-webkit-scrollbar {
+                width: 6px;
+                height: 6px;
+            }
+            ::-webkit-scrollbar-track {
+                background: #F9F9F4;
+            }
+            ::-webkit-scrollbar-thumb {
+                background: rgba(40, 40, 40, 0.2);
+                border-radius: 9999px;
+            }
+            ::-webkit-scrollbar-thumb:hover {
+                background: rgba(127, 29, 29, 0.4);
+            }
+        }
+
+        .sidebar-icon-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 3rem;
+            width: 3rem;
+            margin-top: 0.5rem;
+            margin-bottom: 0.5rem;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: white;
+            color: rgba(40, 40, 40, 0.4);
+            transition-property: all;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 300ms;
+            cursor: pointer;
+            border-radius: 0.75rem;
+        }
+        .sidebar-icon-wrapper:hover {
+            color: #7F1D1D;
+            transform: scale(1.1);
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        .sidebar-icon-wrapper.active {
+            color: #7F1D1D;
+            transform: scale(1.1);
+        }
+
+        .sidebar-tooltip {
+            position: absolute;
+            width: auto;
+            padding: 0.5rem;
+            margin: 0.5rem;
+            min-width: max-content;
+            left: 3.5rem;
+            border-radius: 0.375rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            color: white;
+            background-color: #282828;
+            font-size: 0.75rem;
+            font-weight: 700;
+            transition-property: all;
+            transition-duration: 100ms;
+            transform: scale(0);
+            transform-origin: left;
+        }
+        .sidebar-icon-wrapper:hover .sidebar-tooltip {
+            transform: scale(1);
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-left {
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        .reveal-left.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .reveal-scale {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        .reveal-scale.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .reveal-up.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-eggshell text-charcoal font-sans antialiased">
+    <div class="flex min-h-screen">
+        <!-- Sidebar Navigation -->
+        <nav class="fixed top-0 left-0 h-screen w-20 m-0 flex flex-col bg-white text-charcoal shadow-xl z-50">
+            <div class="flex flex-col items-center py-8 space-y-4">
+                <div class="mb-8">
+                    <div class="w-10 h-10 bg-darkred rounded-xl flex items-center justify-center text-white font-bold text-xl">
+                        N
+                    </div>
+                </div>
+                
+                <div class="sidebar-icon-wrapper group active" onclick="scrollToSection('home')" data-section="home">
+                    <i data-lucide="home" size="24"></i>
+                    <div class="active-indicator absolute -left-1 w-1 h-4 bg-darkred rounded-full"></div>
+                    <span class="sidebar-tooltip">Home</span>
+                </div>
+                
+                <div class="sidebar-icon-wrapper group" onclick="scrollToSection('works')" data-section="works">
+                    <i data-lucide="briefcase" size="24"></i>
+                    <div class="active-indicator absolute -left-1 w-1 h-4 bg-darkred rounded-full hidden"></div>
+                    <span class="sidebar-tooltip">Arbeitsproben</span>
+                </div>
+                
+                <div class="sidebar-icon-wrapper group" onclick="scrollToSection('contact')" data-section="contact">
+                    <i data-lucide="mail" size="24"></i>
+                    <div class="active-indicator absolute -left-1 w-1 h-4 bg-darkred rounded-full hidden"></div>
+                    <span class="sidebar-tooltip">Kontakt</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="ml-20 flex-1">
+            <!-- Header Section -->
+            <section id="home" class="pt-24 pb-12 px-8 md:px-24 max-w-[1800px] mx-auto">
+                <div class="grid lg:grid-cols-4 gap-x-32 items-start mb-24 reveal-left">
+                    <div class="lg:col-span-3">
+                        <h1 class="text-7xl md:text-9xl font-bold mb-4 tracking-tighter">Portfolio. 2026</h1>
+                        <h2 class="text-4xl font-medium text-charcoal/80 mb-2">Nico Ranellucci</h2>
+                        <p class="text-2xl text-charcoal/60">UX/ UI/ Information Designer</p>
+                    </div>
+                    <div class="lg:col-span-1 reveal-scale" style="transition-delay: 0.2s;">
+                        <div class="w-full aspect-[4/3] bg-neutral-200 rounded-2xl overflow-hidden relative group">
+                            <img 
+                                src="ich.png" 
+                                alt="Nico Ranellucci" 
+                                class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-110 group-hover:scale-100"
+                                referrerPolicy="no-referrer"
+                            />
+                            <div class="absolute inset-0 border-2 border-white/20 rounded-2xl pointer-events-none"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info Grid (Lebenslauf) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-32 gap-y-4 mb-32 reveal-up" style="transition-delay: 0.4s;">
+                    <!-- Headings Row -->
+                    <h3 class="text-base uppercase tracking-widest font-bold text-darkred/40">Erfahrung</h3>
+                    <h3 class="text-base uppercase tracking-widest font-bold text-darkred/40 hidden lg:block">Ausbildung</h3>
+                    <h3 class="text-base uppercase tracking-widest font-bold text-darkred/40 hidden lg:block">Skills</h3>
+                    <h3 class="text-base uppercase tracking-widest font-bold text-darkred/40 hidden lg:block">Interests</h3>
+
+                    <!-- Content Row -->
+                    <div class="flex flex-col gap-6 text-base">
+                        <div class="flex flex-col gap-1">
+                            <p class="font-bold text-lg">UX/ UI Designer</p>
+                            <p class="text-charcoal/60">DZR</p>
+                            <p class="text-charcoal/40 italic text-sm">2025</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-8 text-base">
+                        <h3 class="text-base uppercase tracking-widest font-bold text-darkred/40 lg:hidden">Ausbildung</h3>
+                        <div class="flex flex-col gap-1">
+                            <p class="font-bold text-lg">Hochschule Aalen</p>
+                            <p class="text-charcoal/60">Information Design</p>
+                            <p class="text-charcoal/40 italic text-sm">2022 - laufend</p>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <p class="font-bold text-lg">Hochschule Aalen</p>
+                            <p class="text-charcoal/60">User Experience</p>
+                            <p class="text-charcoal/40 italic text-sm">2020 - 2022</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-8 text-base">
+                        <h3 class="text-base uppercase tracking-widest font-bold text-darkred/40 lg:hidden">Skills</h3>
+                        <div class="flex flex-col gap-2">
+                            <p class="font-bold text-lg">Digital</p>
+                            <p class="text-charcoal/60 leading-relaxed">Figma, Office, Adobe, Axure, Blender, CAD</p>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <p class="font-bold text-lg">Sprache</p>
+                            <p class="text-charcoal/60 leading-relaxed">Deutsch, Englisch</p>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <p class="font-bold text-lg">Keys</p>
+                            <p class="text-charcoal/60 leading-relaxed">Nutzerzentriert, elegant, ästhetisch-pragmatisch, teamorientiert, UX-Research, Prototyping, Interaction Design, neugierig, vielseitig</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-6 text-base">
+                        <h3 class="text-base uppercase tracking-widest font-bold text-darkred/40 lg:hidden">Interests</h3>
+                        <div class="flex flex-col gap-1">
+                            <p class="font-bold text-lg">DLRG</p>
+                            <p class="text-charcoal/60">Rettungsschwimmer Silber</p>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <p class="font-bold text-lg">American Football</p>
+                            <p class="text-charcoal/60">QB</p>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <p class="font-bold text-lg">Fußball</p>
+                            <p class="text-charcoal/60">ZM</p>
+                        </div>
+                        <div class="flex flex-col gap-1">
+                            <p class="font-bold text-lg">Andere</p>
+                            <p class="text-charcoal/60">Fitness, Kochen, Lesen, Gaming</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-center pb-12">
+                    <div class="text-darkred cursor-pointer animate-bounce" onclick="scrollToSection('works')">
+                        <i data-lucide="chevron-down" size="32"></i>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Arbeitsproben Section -->
+            <div id="works">
+                <div class="pt-24 px-8 md:px-24 max-w-[1800px] mx-auto mb-12">
+                    <h2 class="text-6xl font-bold">Arbeitsproben</h2>
+                </div>
+
+                <!-- Project 1: Tree's and more -->
+                <section class="py-32 px-8 md:px-24 bg-white reveal">
+                    <div class="max-w-[1800px] mx-auto">
+                        <div class="grid lg:grid-cols-4 gap-32">
+                            <div class="lg:col-span-2 sticky top-32 h-fit">
+                                <div class="flex items-baseline gap-4 mb-8">
+                                    <span class="text-darkred/20 text-7xl font-bold font-mono">01</span>
+                                    <h2 class="text-5xl md:text-6xl font-bold leading-tight">Tree's and more</h2>
+                                </div>
+                                <p class="text-charcoal/70 leading-relaxed text-lg max-w-md">
+                                    Dieses Projekt entstand aus eigenem Antrieb und diente als Experimentierraum zur Erforschung alternativer Interaktionsformen, insbesondere des horizontalen Scrollens. Mich interessiert dabei vor allem, wie sich neue Navigations- und Bewegungsmuster entwickeln lassen, die sich trotz ihrer Ungewohntheit intuitiv und selbstverständlich anfühlen.
+                                </p>
+                            </div>
+                            <div class="lg:col-span-2">
+                                <div class="overflow-x-auto pb-8 scrollbar-hide">
+                                    <div class="flex gap-8 min-w-max">
+                                        <div class="w-[820px] h-[1180px] shrink-0 rounded-3xl overflow-hidden bg-white border border-charcoal/5">
+                                            <iframe style="border: none" width="100%" height="100%" src="https://embed.figma.com/proto/w3BkClzcwuocXmZcyWsrwX/tree-s-and-more?page-id=0%3A1&node-id=3-5&viewport=1087%2C403%2C0.32&scaling=contain&content-scaling=fixed&embed-host=share" allowfullscreen></iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Project 2: Lucha Libre -->
+                <section class="py-32 px-8 md:px-24 bg-eggshell reveal">
+                    <div class="max-w-[1800px] mx-auto">
+                        <div class="grid lg:grid-cols-4 gap-32">
+                            <div class="lg:col-span-2 sticky top-32 h-fit">
+                                <div class="flex items-baseline gap-4 mb-8">
+                                    <span class="text-darkred/20 text-7xl font-bold font-mono">02</span>
+                                    <h2 class="text-5xl md:text-6xl font-bold leading-tight">Lucha Libre</h2>
+                                </div>
+                                <p class="text-charcoal/70 leading-relaxed text-lg max-w-md">
+                                    Auch dieses Projekt entstand aus eigenem Antrieb und ist stärker im Illustration Design verortet als in einem klassischen UX-Kontext. Ziel war es, visuell zu experimentieren und gestalterische Prinzipien jenseits klarer funktionaler Anforderungen zu erkunden. Besonderes Augenmerk lag auf horizontalem Scrollen, da ich diese Interaktionsform als ästhetisch reizvoll empfinde und sie zugleich stärker mit Bildformaten arbeitet, wie sie aus der Kamera- und Filmästhetik bekannt sind. Dadurch entsteht eine eher erzählerische, fließende Wahrnehmung des Inhalts.
+                                </p>
+                            </div>
+                            <div class="lg:col-span-2">
+                                <div class="overflow-x-auto pb-8 scrollbar-hide">
+                                    <div class="flex gap-8 min-w-max">
+                                        <div class="w-[820px] h-[1180px] shrink-0 rounded-3xl overflow-hidden bg-white border border-charcoal/5">
+                                            <iframe style="border: none" width="100%" height="100%" src="https://embed.figma.com/proto/w3BkClzcwuocXmZcyWsrwX/tree-s-and-more?page-id=7%3A225&node-id=7-321&viewport=-2368%2C-78%2C0.63&scaling=min-zoom&content-scaling=fixed&embed-host=share" allowfullscreen></iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Project 3: Earth, Wind and Fire -->
+                <section class="py-32 px-8 md:px-24 bg-white reveal">
+                    <div class="max-w-[1800px] mx-auto">
+                        <div class="grid lg:grid-cols-4 gap-32">
+                            <div class="lg:col-span-2 sticky top-32 h-fit">
+                                <div class="flex items-baseline gap-4 mb-8">
+                                    <span class="text-darkred/20 text-7xl font-bold font-mono">03</span>
+                                    <h2 class="text-5xl md:text-6xl font-bold leading-tight">Earth, Wind and Fire</h2>
+                                </div>
+                                <p class="text-charcoal/70 leading-relaxed text-lg max-w-md">
+                                    Die Idee entstand aus einem Pinterest-Post, der ein reduziertes Vier-Punkte-Menü zeigte. Daraus entwickelte sich der Gedanke, die Navigation konsequent über Symbole zu organisieren und visuell zu verknüpfen. Aus reiner Neugier und Freude am Experiment habe ich mich anschließend daran gesetzt, eine kleine Animation für das Aufklappen des Menüs zu gestalten. Ziel war es, dem ansonsten sehr reduzierten Interface eine subtile Dynamik zu verleihen, ohne die Ruhe des Gesamtkonzepts zu stören.
+                                </p>
+                            </div>
+                            <div class="lg:col-span-2">
+                                <div class="overflow-x-auto pb-8 scrollbar-hide">
+                                    <div class="flex gap-8 min-w-max">
+                                        <div class="w-[820px] h-[1180px] shrink-0 rounded-3xl overflow-hidden bg-white border border-charcoal/5">
+                                            <iframe style="border: none" width="100%" height="100%" src="https://embed.figma.com/proto/w3BkClzcwuocXmZcyWsrwX/tree-s-and-more?page-id=3%3A84&node-id=3-95&viewport=1068%2C601%2C0.51&scaling=min-zoom&content-scaling=fixed&embed-host=share" allowfullscreen></iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Project 4: Just Read -->
+                <section class="py-32 px-8 md:px-24 bg-eggshell reveal">
+                    <div class="max-w-[1800px] mx-auto">
+                        <div class="grid lg:grid-cols-4 gap-32">
+                            <div class="lg:col-span-2 sticky top-32 h-fit">
+                                <div class="flex items-baseline gap-4 mb-8">
+                                    <span class="text-darkred/20 text-7xl font-bold font-mono">04</span>
+                                    <h2 class="text-5xl md:text-6xl font-bold leading-tight">Just Read</h2>
+                                </div>
+                                <p class="text-charcoal/70 leading-relaxed text-lg max-w-md">
+                                    Just Read ist eine Tablet-App, die ich in meiner Freizeit als eigenständiges Projekt entwickelt habe. Ausgangspunkt war mein persönlicher Wunsch, wieder bewusster und häufiger zu lesen. Lesen bedeutet für mich Ruhe, Entschleunigung und eine gewisse Nähe zur Natur. Qualitäten, die im digitalen Alltag zunehmend verloren gehen.
+                                </p>
+                            </div>
+                            <div class="lg:col-span-2">
+                                <div class="overflow-x-auto pb-8 scrollbar-hide">
+                                    <div class="flex gap-8 min-w-max">
+                                        <div class="w-[820px] h-[1180px] shrink-0 rounded-3xl overflow-hidden bg-white border border-charcoal/5">
+                                            <iframe style="border: none" width="100%" height="100%" src="https://embed.figma.com/proto/w3BkClzcwuocXmZcyWsrwX/tree-s-and-more?page-id=7%3A226&node-id=7-558&viewport=528%2C-17%2C0.33&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=7%3A558&embed-host=share" allowfullscreen></iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Project 5: Quick-Start-Guide -->
+                <section class="py-32 px-8 md:px-24 bg-white reveal">
+                    <div class="max-w-[1800px] mx-auto">
+                        <div class="grid lg:grid-cols-4 gap-32">
+                            <div class="lg:col-span-2 sticky top-32 h-fit">
+                                <div class="flex items-baseline gap-4 mb-8">
+                                    <span class="text-darkred/20 text-7xl font-bold font-mono">05</span>
+                                    <h2 class="text-5xl md:text-6xl font-bold leading-tight">Quick-Start-Guide</h2>
+                                </div>
+                                <p class="text-charcoal/70 leading-relaxed text-lg max-w-md">
+                                    Mein neuestes Studioprojekt. Hintergrund war eine interaktive Präsentation eines 3D-Stifts auf einem 3D-Bildschirm. Das Ziel war eine nutzerzentrierte Informationsprodukt zu erstellen.
+                                </p>
+                            </div>
+                            <div class="lg:col-span-2">
+                                <div class="flex flex-col gap-8 w-[820px] shrink-0">
+                                    <div class="rounded-3xl overflow-hidden border border-charcoal/5 bg-white">
+                                        <img src="vorder.png" alt="Quick-Start-Guide Vorderseite" class="w-full h-auto" referrerPolicy="no-referrer" />
+                                    </div>
+                                    <div class="rounded-3xl overflow-hidden border border-charcoal/5 bg-white">
+                                        <img src="innenseite.png" alt="Quick-Start-Guide Innenseite" class="w-full h-auto" referrerPolicy="no-referrer" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Contact Section -->
+            <section id="contact" class="py-64 px-8 md:px-24 bg-eggshell min-h-[80vh] flex flex-col justify-center reveal">
+                <div class="max-w-[1800px] mx-auto w-full">
+                    <h2 class="text-3xl md:text-5xl font-bold mb-24 max-w-none md:whitespace-nowrap reveal-up">
+                        Ein Interface ist kein Gemälde, sondern ein Dialog.
+                    </h2>
+                    <div class="grid lg:grid-cols-4 gap-32 items-end mb-24">
+                        <div class="lg:col-span-2">
+                            <h3 class="text-6xl font-bold">Kontakt</h3>
+                        </div>
+                        <div class="lg:col-span-2 space-y-4 text-right">
+                            <div class="flex justify-end items-baseline gap-4">
+                                <span class="text-charcoal/40 text-2xl">mail:</span>
+                                <a href="mailto:ranellucci.n@gmail.com" class="text-4xl md:text-5xl font-bold hover:text-darkred transition-colors">ranellucci.n@gmail.com</a>
+                            </div>
+                            <div class="flex justify-end items-baseline gap-4">
+                                <span class="text-charcoal/40 text-2xl">Mobil:</span>
+                                <span class="text-4xl md:text-5xl font-bold">0179 76 08 969</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center pb-12">
+                        <div class="text-darkred cursor-pointer animate-bounce" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
+                            <i data-lucide="arrow-up" size="32"></i>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Simple Footer -->
+            <footer class="py-12 px-8 md:px-24 text-center text-charcoal/20 text-sm uppercase tracking-[0.5em]">
+                Portfolio 2026 • Nico Ranellucci
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Scroll to section function
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Scroll Spy and Reveal Animations
+        window.addEventListener('scroll', () => {
+            const sections = ['home', 'works', 'contact'];
+            const scrollPosition = window.scrollY + 100;
+
+            sections.forEach(sectionId => {
+                const element = document.getElementById(sectionId);
+                if (element && scrollPosition >= element.offsetTop && scrollPosition < element.offsetTop + element.offsetHeight) {
+                    // Update active state in sidebar
+                    document.querySelectorAll('.sidebar-icon-wrapper').forEach(wrapper => {
+                        wrapper.classList.remove('active');
+                        wrapper.querySelector('.active-indicator').classList.add('hidden');
+                    });
+                    
+                    const activeWrapper = document.querySelector(`.sidebar-icon-wrapper[data-section="${sectionId}"]`);
+                    if (activeWrapper) {
+                        activeWrapper.classList.add('active');
+                        activeWrapper.querySelector('.active-indicator').classList.remove('hidden');
+                    }
+                }
+            });
+        });
+
+        // Intersection Observer for Reveal Animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    // Once animated, we can stop observing if we want "once: true" behavior
+                    // observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal, .reveal-left, .reveal-scale, .reveal-up').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
